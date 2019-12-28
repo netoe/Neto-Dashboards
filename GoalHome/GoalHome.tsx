@@ -25,7 +25,7 @@ export const GoalHome = React.memo(({goal}: IProps) => {
 	);
 
 	return (
-		<div>
+		<div className={cls.ctnPage}>
 			<AppPageHeader title={name}/>
 			<AppPageDescription description={description}/>
 			<div className={cls.ctnSections}>
