@@ -14,14 +14,16 @@ interface IResWeekdaysAndWeekends {
 	byWeeks: boolean[];
 }
 
+const getYearMonthDate = (date: Date): string => new Date(+date - date.getTimezoneOffset() * 60 * 1000).toISOString().split(/[TZ]/)[0];
+
 // Get weekdays and weekends.
 export const countWeekdaysAndWeekends = (start: df = new Date(), due: df): IResWeekdaysAndWeekends => {
-	const d = newDay(start);
-	const total = newDay(due) - d + 1;
+	start = new Date(start);
+	const total = newDay(due) - newDay(getYearMonthDate(start)) + 1;
 	if (total <= 0) {return {total: total - 1, weekends: -1, weekdays: -1, byWeeks: []};}
 	// The first is the current day, and the last one is the due day.
 	// The local time should be used, to keep the representing date right of the original due.
-	const byWeeks = new Array(total).fill(false).map((value, ith) => !([0, 6].includes(new Date((d + ith) * 3600 * 24000).getDay())));
+	const byWeeks = new Array(total).fill(false).map((value, ith) => !([0, 6].includes(new Date(+start + ith * 3600 * 24000).getDay())));
 	const weekdays = byWeeks.reduce((n, v) => v ? n + 1 : n, 0);
 	return {total, weekdays, weekends: total - weekdays, byWeeks};
 };
