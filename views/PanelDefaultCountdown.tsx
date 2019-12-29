@@ -5,11 +5,12 @@ import {makeStyles} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import IconTrailOff from '@material-ui/icons/HourglassEmpty';
 import IconTrailOn from '@material-ui/icons/HourglassFull';
-import {useLocalizedResourcesFromContext} from '../../mui-lib/hooks/useLanguage';
+import {useLocalizedResourcesFromContext} from 'src/graphic/mui-lib/hooks/useLanguage';
 import {newCountDownPrimaryAndSecondaryBundle} from '../resources/constructors';
 import {countWorkAndFreeDays} from '../resources/countdown-by-week-and-working-days';
 import {ICountDownPrimaryAndSecondaryBundle} from '../resources/typed-countdowns';
 import {IGoal} from '../resources/typed-goals';
+import {IndicatorProgressBar} from './IndicatorProgressBar';
 import {RB} from './PanelCountdown.resources';
 
 export const useStyles = makeStyles({
@@ -61,8 +62,6 @@ export const PanelDefaultCountdown = React.memo((
 	const [trail, setTrail] = React.useState(false);
 	const [trailDays, setTrailDays] = React.useState(undefined as ICountDownPrimaryAndSecondaryBundle | undefined);
 
-	days = trail ? trailDays || days : days;
-
 	React.useEffect(() => {
 		if (!trail) {return;}
 		const start = new Date();
@@ -85,15 +84,22 @@ export const PanelDefaultCountdown = React.memo((
 		};
 	}, [trail]);
 
-
 	// Set the cached unit, overriding the original one.
 	days.unit = R.readableUnitDay;
 
-	const hours = newCountDownPrimaryAndSecondaryBundle(
+	const realDays = days;
+	const realHours = newCountDownPrimaryAndSecondaryBundle(
 		days.primary * freeHoursPerFreeDay + days.secondary * freeHoursPerWorkingDay,
 		days.secondary * workingHoursPerWorkingDay,
 		R.readableUnitHour, (value: number) => value > 50 ? (Math.floor(value / 8) + 'd' + (value % 8 === 0 ? '' : ' ' + (value % 8) + 'h')) : value + 'h',
 	);
+
+	days = trail ? trailDays || realDays : realDays;
+	const hours = trail ? newCountDownPrimaryAndSecondaryBundle(
+		days.primary * freeHoursPerFreeDay + days.secondary * freeHoursPerWorkingDay,
+		days.secondary * workingHoursPerWorkingDay,
+		R.readableUnitHour, (value: number) => value > 50 ? (Math.floor(value / 8) + 'd' + (value % 8 === 0 ? '' : ' ' + (value % 8) + 'h')) : value + 'h',
+	) : realHours;
 
 	const onToggleTrail = () => setTrail(!trail);
 
@@ -117,6 +123,17 @@ export const PanelDefaultCountdown = React.memo((
 		</div>
 	);
 
+	const renderTrailIndicators = () => trail ? (
+		<div>
+			<IndicatorProgressBar
+				total={realDays.total} primary={days.primary} secondary={days.secondary} label2={days.primary + 'd'} label={days.total + 'd'}/>
+			<IndicatorProgressBar
+				total={realHours.total} primary={hours.primary} secondary={hours.secondary} label2={hours.primary + 'h'} label={hours.total + 'h'}/>
+		</div>
+	) : undefined;
+
+	// Math.round(days.total / realDays.total * 100)
+	// Math.round(hours.total / realHours.total * 100)
 	return (
 		<div className={cls.ctn}>
 			<div className={cls.header}>
@@ -127,6 +144,7 @@ export const PanelDefaultCountdown = React.memo((
 			<div className={cls.card}>
 				{renderRow(days, [R.totalDays, R.weekends, R.weekdays])}
 				{renderRow(hours, [R.totalHours, R.freeHours, R.workingHours])}
+				{renderTrailIndicators()}
 			</div>
 		</div>
 	);
