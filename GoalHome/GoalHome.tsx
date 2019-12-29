@@ -31,7 +31,7 @@ export const GoalHome = React.memo(({goal}: IProps) => {
 			<AppPageDescription description={description}/>
 			<div className={cls.ctnSections}>
 				<div className={cls.ctnLeftSections}>
-					{countdown ? <PanelDefaultCountdown days={countdown}/> : undefined}
+					{countdown ? <PanelDefaultCountdown goal={goal} days={countdown}/> : undefined}
 					{renderCountdownEntries(countdowns)}
 				</div>
 				<div className={cls.ctnRightSections}/>

@@ -1,15 +1,22 @@
 //
 
 import React from 'react';
+import {makeStyles} from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import IconTrailOff from '@material-ui/icons/HourglassEmpty';
+import IconTrailOn from '@material-ui/icons/HourglassFull';
 import {useLocalizedResourcesFromContext} from '../../mui-lib/hooks/useLanguage';
 import {newCountDownPrimaryAndSecondaryBundle} from '../resources/constructors';
+import {countWorkAndFreeDays} from '../resources/countdown-by-week-and-working-days';
 import {ICountDownPrimaryAndSecondaryBundle} from '../resources/typed-countdowns';
-import {makeStyles} from '@material-ui/core/styles';
+import {IGoal} from '../resources/typed-goals';
 import {RB} from './PanelCountdown.resources';
 
 export const useStyles = makeStyles({
 	ctn: {margin: '8px'},
-	heading: {fontWeight: 'bold', color: '#666'},
+	header: {display: 'flex', alignItems: 'center'},
+	heading: {fontWeight: 'bold', color: '#666', fontSize: 'large'},
+	description: {fontStyle: 'italic', color: '#aaa'},
 
 	card: {margin: '16px 0', padding: '8px', background: 'white', borderRadius: '16px', display: 'flex', flexFlow: 'column', textAlign: 'center'},
 	//{background: 'white', borderRadius: '12px', padding: '8px', margin: '8px 0', display: 'flex', textAlign: 'center'},
@@ -35,6 +42,7 @@ interface IDaysToHoursOptions {
 }
 
 interface IProps extends IDaysToHoursOptions {
+	goal: IGoal;
 	days: ICountDownPrimaryAndSecondaryBundle;
 }
 
@@ -43,12 +51,40 @@ const and = (...values: (string | number)[]) => values.join(' ');
 // The default/simple countdown by days and hours.
 export const PanelDefaultCountdown = React.memo((
 	{
-		days,
+		goal, days,
 		freeHoursPerFreeDay = FREE_HOURS_PER_FREE_DAY, freeHoursPerWorkingDay = FREE_HOURS_PER_WORKING_DAY, workingHoursPerWorkingDay = WORKING_HOURS_PER_WORKING_DAY,
 	}: IProps,
 ) => {
 	const cls = useStyles();
 	const R = useLocalizedResourcesFromContext(RB);
+
+	const [trail, setTrail] = React.useState(false);
+	const [trailDays, setTrailDays] = React.useState(undefined as ICountDownPrimaryAndSecondaryBundle | undefined);
+
+	days = trail ? trailDays || days : days;
+
+	React.useEffect(() => {
+		if (!trail) {return;}
+		const start = new Date();
+		let i = 0;
+		const t = setInterval(() => {
+			i++;
+			const res = countWorkAndFreeDays(+start + i * 3600 * 24000, goal.dateDue || '2020-01-21', ['2020-01-19'], ['2020-01-01']);
+			if (res.total <= 0) {
+				console.log('end of the end -/>', res);
+				setTrail(false);
+				return;
+			}
+			const days = newCountDownPrimaryAndSecondaryBundle(res.freedays, res.workdays, 'd');
+			console.log('calculated:', res, days);
+			setTrailDays(days);
+		}, 999);
+		return () => {
+			console.log('end of the end -+>');
+			clearInterval(t);
+		};
+	}, [trail]);
+
 
 	// Set the cached unit, overriding the original one.
 	days.unit = R.readableUnitDay;
@@ -59,6 +95,7 @@ export const PanelDefaultCountdown = React.memo((
 		R.readableUnitHour, (value: number) => value > 50 ? (Math.floor(value / 8) + 'd' + (value % 8 === 0 ? '' : ' ' + (value % 8) + 'h')) : value + 'h',
 	);
 
+	const onToggleTrail = () => setTrail(!trail);
 
 	const renderRow = (
 		{total, primary, secondary, unit = '', render}: ICountDownPrimaryAndSecondaryBundle,
@@ -82,7 +119,11 @@ export const PanelDefaultCountdown = React.memo((
 
 	return (
 		<div className={cls.ctn}>
-			<div className={cls.heading} title={R.description}>{R.title}</div>
+			<div className={cls.header}>
+				<div className={cls.heading} title={R.description}>{R.title}</div>
+				<IconButton color='secondary' size='small' onClick={onToggleTrail}>{trail ? <IconTrailOn/> : <IconTrailOff/>}</IconButton>
+				{goal.dateDue && goal.dateFrom ? <div className={cls.description}>Due {goal.dateDue}; From {goal.dateFrom}</div> : undefined}
+			</div>
 			<div className={cls.card}>
 				{renderRow(days, [R.totalDays, R.weekends, R.weekdays])}
 				{renderRow(hours, [R.totalHours, R.freeHours, R.workingHours])}

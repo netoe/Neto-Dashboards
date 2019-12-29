@@ -38,6 +38,8 @@ const countdowns = [
 ];
 
 const goalMillstone2019to2020 = newDashboardGoal('milestone', 'Milestone(2020-01-21)', days, countdowns, '');
+goalMillstone2019to2020.dateFrom = '2019-12-25';
+goalMillstone2019to2020.dateDue = '2020-01-21';
 
 export const mocked = {
 	goalMillstone2019to2020,
