@@ -37,7 +37,7 @@ const countdowns = [
 	cdHours,
 ];
 
-const goalMillstone2019to2020 = newDashboardGoal('milestone', 'Milestone(2020-01-21)', countdowns, '');
+const goalMillstone2019to2020 = newDashboardGoal('milestone', 'Milestone(2020-01-21)', days, countdowns, '');
 
 export const mocked = {
 	goalMillstone2019to2020,

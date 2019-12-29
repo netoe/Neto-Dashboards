@@ -6,6 +6,7 @@ import {AppPageHeader} from '../../components/AppPageHeader';
 import {ICountdownEntry, ICountDownPrimaryAndSecondaryBundle} from '../resources/typed-countdowns';
 import {IGoal} from '../resources/typed-goals';
 import {CardCountdownEntry} from '../views/CardCountdownEntry';
+import {PanelDefaultCountdown} from '../views/PanelDefaultCountdown';
 import {useStyles} from './styles';
 
 interface IProps {
@@ -14,7 +15,7 @@ interface IProps {
 
 export const GoalHome = React.memo(({goal}: IProps) => {
 	const cls = useStyles();
-	const {name, description, countdowns} = goal;
+	const {name, description, countdown, countdowns} = goal;
 
 	const renderCountdownEntries = (countdowns?: ICountdownEntry<ICountDownPrimaryAndSecondaryBundle>[]) => (
 		<div className={cls.ctnSection}>
@@ -30,6 +31,7 @@ export const GoalHome = React.memo(({goal}: IProps) => {
 			<AppPageDescription description={description}/>
 			<div className={cls.ctnSections}>
 				<div className={cls.ctnLeftSections}>
+					{countdown ? <PanelDefaultCountdown days={countdown}/> : undefined}
 					{renderCountdownEntries(countdowns)}
 				</div>
 				<div className={cls.ctnRightSections}/>
