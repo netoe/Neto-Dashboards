@@ -1,19 +1,20 @@
 //
 
 import React from 'react';
+import {useLocalizedResourcesFromContext} from 'src/graphic/mui-lib/hooks/useLanguage';
 import {LayoutAppHeader} from '../../components/LayoutAppHeader';
 import {AppMenus} from '../AppMenus/AppMenus';
 import {GoalHome} from '../GoalHome/GoalHome';
 import {IGoal} from '../resources/typed-goals';
-import {R} from './resources';
+import {RB} from './resources';
 import {useStyles} from './styles';
-
-let title = R.title;
 
 interface IProps {}
 
 export const AppHome = React.memo<IProps>(() => {
 	const cls = useStyles();
+	const R = useLocalizedResourcesFromContext(RB);
+
 	const [menuItem, setMenuItem] = React.useState(undefined as IGoal | undefined);
 
 	const renderPageBody = () => (
@@ -30,7 +31,8 @@ export const AppHome = React.memo<IProps>(() => {
 
 	return (
 		<LayoutAppHeader
-			title={title} body={menuItem ? renderGoalPage() : renderPageBody()}
+			title={R.title}
+			body={menuItem ? renderGoalPage() : renderPageBody()}
 			nav={<AppMenus selectedMenuItem={menuItem} onSelected={setMenuItem}/>}
 		/>
 	);
