@@ -1,16 +1,21 @@
 //
 
 import {newCountdown, newCountDownPrimaryAndSecondaryBundle, newDashboardGoal} from './constructors';
+import {countWorkAndFreeDays} from './countdown-by-week-and-working-days';
 import {ICountDownPrimaryAndSecondaryBundle} from './typed-countdowns';
 
 const FREE_HOURS_PER_FREE_DAY = 11;
 const FREE_HOURS_PER_WORKING_DAY = 5;
 const WORKING_HOURS_PER_WORKING_DAY = 8;
 
+console.log('2019-12-28 -->', countWorkAndFreeDays('2019-12-28', '2020-01-21', ['2020-01-19'], ['2020-01-01']));
+const res = countWorkAndFreeDays(undefined, '2020-01-21', ['2020-01-19'], ['2020-01-01']);
+console.log(new Date(), '-->', res);
+
 // Counted on 2019-12-28(excluded).
 // The week-ending days before 2020-01-21 are 7.
 // The week days before 2020-01-21(included) are 17.
-const days = newCountDownPrimaryAndSecondaryBundle(7, 17, 'd');
+const days = newCountDownPrimaryAndSecondaryBundle(res.freedays, res.workdays, 'd');
 const cdDays = newCountdown<ICountDownPrimaryAndSecondaryBundle>(
 	'Countdown By Days', ['Total Days', 'Weekends', 'Weekdays'], days,
 	'',
@@ -32,7 +37,7 @@ const countdowns = [
 	cdHours,
 ];
 
-const goalMillstone2019to2020 = newDashboardGoal('millstone', 'Millstone(2020-01-21)', countdowns, '');
+const goalMillstone2019to2020 = newDashboardGoal('milestone', 'Milestone(2020-01-21)', countdowns, '');
 
 export const mocked = {
 	goalMillstone2019to2020,
