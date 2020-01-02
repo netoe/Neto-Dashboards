@@ -1,7 +1,7 @@
 //
 
 import React from 'react';
-import {useLocalizedResourcesFromContext} from 'src/graphic/mui-lib/hooks/useLanguage';
+import {useLocalizedResourcesFromContext} from 'src/mui-lib/hooks/useLanguage';
 import {LayoutAppHeader} from '../../components/LayoutAppHeader';
 import {AppMenus} from '../AppMenus/AppMenus';
 import {GoalHome} from '../GoalHome/GoalHome';

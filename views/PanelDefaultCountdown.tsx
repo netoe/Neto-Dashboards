@@ -5,7 +5,7 @@ import {makeStyles} from '@material-ui/core/styles';
 import IconButton from '@material-ui/core/IconButton';
 import IconTrailOff from '@material-ui/icons/HourglassEmpty';
 import IconTrailOn from '@material-ui/icons/HourglassFull';
-import {useLocalizedResourcesFromContext} from 'src/graphic/mui-lib/hooks/useLanguage';
+import {useLocalizedResourcesFromContext} from 'src/mui-lib/hooks/useLanguage';
 import {newCountDownPrimaryAndSecondaryBundle} from '../resources/constructors';
 import {countWorkAndFreeDays} from '../resources/countdown-by-week-and-working-days';
 import {ICountDownPrimaryAndSecondaryBundle} from '../resources/typed-countdowns';
