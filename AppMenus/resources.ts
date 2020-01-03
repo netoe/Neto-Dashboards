@@ -1,6 +1,6 @@
 //
 
-import {getAppSecondaryMenu, IMenuSection, newMenuSection} from '../../components/AppSecondaryMenu';
+import {getAppSecondaryMenu, IMenuSection, newMenuSection} from 'src/mui-views/app/AppSecondaryMenu';
 import {newDashboardGoal} from '../resources/constructors';
 import {mocked} from '../resources/mocked-goals';
 import {IGoal} from '../resources/typed-goals';

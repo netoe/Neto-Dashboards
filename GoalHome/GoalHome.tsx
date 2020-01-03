@@ -1,8 +1,8 @@
 //
 
 import React from 'react';
-import {AppPageDescription} from '../../components/AppPageDescription';
-import {AppPageHeader} from '../../components/AppPageHeader';
+import {AppPageHeader} from 'src/mui-views/app/AppPageHeader';
+import {AppPageParagraph} from 'src/mui-views/app/AppPageParagraph';
 import {ICountdownEntry, ICountDownPrimaryAndSecondaryBundle} from '../resources/typed-countdowns';
 import {IGoal} from '../resources/typed-goals';
 import {CardCountdownEntry} from '../views/CardCountdownEntry';
@@ -28,7 +28,7 @@ export const GoalHome = React.memo(({goal}: IProps) => {
 	return (
 		<div className={cls.ctnPage}>
 			<AppPageHeader title={name}/>
-			<AppPageDescription description={description}/>
+			<AppPageParagraph description={description}/>
 			<div className={cls.ctnSections}>
 				<div className={cls.ctnLeftSections}>
 					{countdown ? <PanelDefaultCountdown goal={goal} days={countdown}/> : undefined}
